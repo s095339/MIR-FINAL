@@ -1,7 +1,9 @@
 import os
 import argparse
 import pyaudio
+import matplotlib.pyplot as plt
 import wave
+import numpy as np
 #-------------
 from Source_Separation.Source_Separation import Source_Separation
 from Pitch_detection_model.vocal_pitch_recognition import vocal_pitch_recognition
@@ -44,7 +46,7 @@ def import_songs(args):
     #-------------------------------------------------------------
     return
 
-def validate(args):
+def record(args):
     """
     Record your singing and apply the vocal pitch generation to generate a song list
     --------------------------
@@ -77,17 +79,19 @@ def validate(args):
         frames.append(data)
     print("recording stopped")
 
+    
     stream.stop_stream()
     stream.close()
     p.terminate()
+    frames = np.array(frames)
 
+    
+    amplitude = np.frombuffer(frames, np.int16)
+    plt.plot(amplitude)
+    #plot(amplitude)
+    plt.show()
     # dump the data to a .wav file and save
-    wf = wave.open("output.wav", 'wb')
-    wf.setnchannels(CHANNELS)
-    wf.setsampwidth(p.get_sample_size(FORMAT))
-    wf.setframerate(RATE)
-    wf.writeframes(b''.join(frames))
-    wf.close()
+    
 
     #------------------------------------------
     return
@@ -97,6 +101,6 @@ if __name__ == '__main__':
     args = arg()
     print(args.mode)
     if args.mode == 'r':
-        validate(args)
+        recorded_vocal = record(args)
     elif args.mode == 'i':
         import_songs(args)
