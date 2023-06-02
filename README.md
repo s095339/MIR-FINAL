@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # karaoke-scoring-system
 
 
@@ -16,3 +17,6 @@ The system contains main subsystem：
 ## 2. Project 
 
 
+=======
+# karaoke-scoring-system
+>>>>>>> 04dce1c0a1c2fa57728cd8ef4a4584c0ff780361
