@@ -152,7 +152,7 @@ def separate(opts=None):
             'error: stem "{stem}" is not in selected model. STEM must be one of {sources}.'.format(
                 stem=args.stem, sources=', '.join(model.sources)))
     out = args.out / args.name
-    out.mkdir(parents=True, exist_ok=True)
+    #out.mkdir(parents=True, exist_ok=True)
     print(f"Separated tracks will be stored in {out.resolve()}")
     for track in args.tracks:
         if not track.exists():
@@ -191,15 +191,15 @@ def separate(opts=None):
                 stem = out / args.filename.format(track=track.name.rsplit(".", 1)[0],
                                                   trackext=track.name.rsplit(".", 1)[-1],
                                                   stem=name, ext=ext)
-                stem.parent.mkdir(parents=True, exist_ok=True)
-                save_audio(source, str(stem), **kwargs)
+                #stem.parent.mkdir(parents=True, exist_ok=True)
+                #save_audio(source, str(stem), **kwargs)
         else:
             sources = list(sources)
             stem = out / args.filename.format(track=track.name.rsplit(".", 1)[0],
                                               trackext=track.name.rsplit(".", 1)[-1],
                                               stem=args.stem, ext=ext)
-            stem.parent.mkdir(parents=True, exist_ok=True)
-            save_audio(sources.pop(model.sources.index(args.stem)), str(stem), **kwargs)
+            #stem.parent.mkdir(parents=True, exist_ok=True)
+            #save_audio(sources.pop(model.sources.index(args.stem)), str(stem), **kwargs)
             # Warning : after poping the stem, selected stem is no longer in the list 'sources'
             other_stem = th.zeros_like(sources[0])
             for i in sources:
@@ -207,8 +207,8 @@ def separate(opts=None):
             stem = out / args.filename.format(track=track.name.rsplit(".", 1)[0],
                                               trackext=track.name.rsplit(".", 1)[-1],
                                               stem="no_"+args.stem, ext=ext)
-            stem.parent.mkdir(parents=True, exist_ok=True)
-            save_audio(other_stem, str(stem), **kwargs)
+           #stem.parent.mkdir(parents=True, exist_ok=True)
+           #save_audio(other_stem, str(stem), **kwargs)
         
     return sources,other_stem
         
