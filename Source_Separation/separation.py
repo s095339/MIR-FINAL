@@ -9,10 +9,10 @@ from demucs.Source_Separation import Source_Separation
 import soundfile as sf
 
 file = 'J.wav'
-vocal, no_vocal = Source_Separation(file)
+background, vocals = Source_Separation(file)
 
 sr = 44100 
 
-sf.write('no_vocal.wav', no_vocal, sr)
+sf.write('no_vocal.wav', background, sr)
 
-sf.write('vocals.wav', vocal, sr)
+sf.write('vocals.wav', vocals, sr)
