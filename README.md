@@ -13,6 +13,6 @@ The system contains main subsystem：
 
 4. vocal pitch recognition: Analyze  the  human voice (vocal) recorded by Vocal Recorder and the vocal separated by Source Separation.
 
-## 2. System Graph
+## 2. Project 
 
 
