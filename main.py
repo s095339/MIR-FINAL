@@ -2,8 +2,9 @@ import os
 import argparse
 import pyaudio
 import wave
+import soundfile as sf
 #-------------
-from Source_Separation.Source_Separation import Source_Separation
+from Source_Separation.separation import getSeparation
 from Pitch_detection_model.vocal_pitch_recognition import vocal_pitch_recognition
 #-------------
 DataBase_path = "./Database"
@@ -11,7 +12,7 @@ DataBase_path = "./Database"
 def arg():
     parser = argparse.ArgumentParser()
     parser.add_argument("-mode", help="i: import song \nr:record sining", type=str, default="r")
-    parser.add_argument("-song_path", help="the .wav file of song to be imported", type=str)
+    parser.add_argument("-song_path", help="the .wav/.mp3 file of song to be imported", type=str)
     args = parser.parse_args()
     return args
 
@@ -24,16 +25,22 @@ def import_songs(args):
     """
 
     #Source_Separation
-    song_file = arg.song_path.split("/")[-1]
-    song_name = song_file.replace(".wav","")
-    vocal, accompaniment = Source_Separation(arg.song_path)
+    song_file = args.song_path.split("/")[-1]
+    file_format = song_file[-4:]
+    song_name = song_file.replace(file_format,"")
+    vocal, accompaniment ,sr= getSeparation(args.song_path)
 
     #vocal pitch recognition
-    pitch_list = vocal_pitch_recognition(vocal)
+    #pitch_list = vocal_pitch_recognition(vocal)
     
 
     dir_path = os.path.join(DataBase_path, song_name)
     os.mkdir(dir_path)
+    acc_file = os.path.join(dir_path,"accompaniment.wav")
+    vocal_file = os.path.join(dir_path,"vocals.wav")
+    sf.write(acc_file, accompaniment, sr)
+    sf.write(vocal_file, vocal, sr)
+
     #TODO: ------------------------------------------------------
     """
     save the original .wav file,accompaniment and vocal separated 
@@ -95,7 +102,8 @@ def validate(args):
 
 if __name__ == '__main__':
     args = arg()
-    print(args.mode)
+    #print(args.m)
+    print(args.song_path)
     if args.mode == 'r':
         validate(args)
     elif args.mode == 'i':

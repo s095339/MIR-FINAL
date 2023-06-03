@@ -5,14 +5,12 @@ Created on Thu Jun  1 23:58:24 2023
 @author: Bill
 """
 
-from demucs.Source_Separation import Source_Separation
+from .demucs.Source_Separation import Source_Separation
 import soundfile as sf
 
-file = 'J.wav'
-background, vocals = Source_Separation(file)
 
-sr = 44100 
 
-sf.write('no_vocal.wav', background, sr)
+def getSeparation(file):
+    
+    vocal, no_vocal,44100 = Source_Separation(file)
 
-sf.write('vocals.wav', vocals, sr)
