@@ -20,3 +20,16 @@ The system contains main subsystem：
 =======
 # karaoke-scoring-system
 >>>>>>> 04dce1c0a1c2fa57728cd8ef4a4584c0ff780361
+
+
+# Requirements
+For running SourceSeparation, type it in command line:
+>python.exe -m pip install -U demucs
+For recording voice:
+>pip install pyaudio
+# Source Separation
+For Source Separation, you can import your song and get the vocal and accompaniment by enterring
+
+> python main.py -mode i -song_path path/to/your/song 
+
+
