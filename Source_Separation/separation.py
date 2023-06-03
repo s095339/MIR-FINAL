@@ -11,6 +11,6 @@ import soundfile as sf
 
 
 def getSeparation(file):
-    
-    vocal, no_vocal,44100 = Source_Separation(file)
-
+    sr = 44100
+    vocal, no_vocal= Source_Separation(file)
+    return vocal, no_vocal, sr
