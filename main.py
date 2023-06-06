@@ -3,6 +3,9 @@ import argparse
 import pyaudio
 import wave
 import soundfile as sf
+import pygame
+from pydub import AudioSegment
+
 #-------------
 from Source_Separation.separation import getSeparation
 from Pitch_detection_model.vocal_pitch_recognition import vocal_pitch_recognition
@@ -28,12 +31,11 @@ def import_songs(args):
     song_file = args.song_path.split("/")[-1]
     file_format = song_file[-4:]
     song_name = song_file.replace(file_format,"")
-    vocal, accompaniment ,sr= getSeparation(args.song_path)
+    accompaniment, vocal ,sr= getSeparation(args.song_path)
 
     #vocal pitch recognition
     #pitch_list = vocal_pitch_recognition(vocal)
     
-
     dir_path = os.path.join(DataBase_path, song_name)
     os.mkdir(dir_path)
     acc_file = os.path.join(dir_path,"accompaniment.wav")
@@ -66,8 +68,15 @@ def validate(args):
     CHANNELS = 1
     RATE = 44100
 
+
+    bgm = "D:\Goody\git-repos\Song-DATA\求佛\\accompaniment.wav"
+    music = AudioSegment.from_file(bgm)
+    duration_in_seconds = len(music) / 1000
+    print(duration_in_seconds)
+
+    # Open the audio stream to record audio
     p = pyaudio.PyAudio()
-    stream = p.open(
+    stream_input  = p.open(
         format = FORMAT,
         channels=CHANNELS,
         rate = RATE,
@@ -75,17 +84,30 @@ def validate(args):
         frames_per_buffer=CHUNK
     )    
 
+    # Turn on the audio stream to play music
+    pygame.mixer.init()
+    pygame.mixer.music.load(bgm)
+    pygame.mixer.music.play()
+
+    # record and write audio data
     print("start recording...")
-    # record 3 sec
+    i=0
+    k=0
     frames = []
-    seconds = 3
-    for i in range(0, int(RATE/CHUNK*seconds)):
-        data = stream.read(CHUNK)
-        frames.append(data)
+    while pygame.mixer.music.get_busy():
+        if i % int(RATE / CHUNK) == 0:
+            data = stream_input.read(CHUNK)
+            frames.append(data)
+            print("--------------------------------------------------------------------")
+            print(k)
+            k=k+1
+        
+        i = i+1
     print("recording stopped")
 
-    stream.stop_stream()
-    stream.close()
+    # stop recording
+    stream_input.stop_stream()
+    stream_input.close()
     p.terminate()
 
     # dump the data to a .wav file and save
@@ -96,13 +118,17 @@ def validate(args):
     wf.writeframes(b''.join(frames))
     wf.close()
 
+    # Stop playing music
+    pygame.mixer.music.stop()
+    pygame.mixer.quit()
+
     #------------------------------------------
     return
 
 
 if __name__ == '__main__':
     args = arg()
-    #print(args.m)
+    # print(args.m)
     print(args.song_path)
     if args.mode == 'r':
         validate(args)
