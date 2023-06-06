@@ -69,7 +69,7 @@ def validate(args):
     RATE = 44100
 
 
-    bgm = "D:\Goody\git-repos\Song-DATA\求佛\\accompaniment.wav"
+    bgm = "./database/idol/vocals.wav"
     music = AudioSegment.from_file(bgm)
     duration_in_seconds = len(music) / 1000
     print(duration_in_seconds)
