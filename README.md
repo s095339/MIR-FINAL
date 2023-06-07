@@ -1,5 +1,7 @@
-<<<<<<< HEAD
-# karaoke-scoring-system
+karaoke-scoring-system
+==
+
+[TOC]
 
 
 ## 1 introduction
@@ -14,21 +16,35 @@ The system contains main subsystem：
 
 4. vocal pitch recognition: Analyze  the  human voice (vocal) recorded by Vocal Recorder and the vocal separated by Source Separation.
 
-## 2. Project 
+## 2. Project directory structure
+```
+|--/MIR_FINAL
+    |-/Database
+    |-/lib
+        |-validate.py
+    |-/Pitch_detection_model
+        |-vocal_pitch_recognition.py
+    |-/Source_Separation
+        |-/demucs
+        |-separation.py
+        |-Source_Separation.py
+    |-main.py
+    |-README.md
+    |-requirements.txt
+```
 
-
-=======
-# karaoke-scoring-system
->>>>>>> 04dce1c0a1c2fa57728cd8ef4a4584c0ff780361
-
-
-# Requirements
-For running SourceSeparation, type it in command line:
+## 3. Requirements
+Before run list project, we need to install the following package relates to Source Separation function
 >python.exe -m pip install -U demucs
 
-For recording voice:
->pip install pyaudio
-# Source Separation
+For recording voice: 
+>pip install -r requirements.txt
+
+## 4. Source Separation
+This part incorporates code from the demucs library developed by Facebook Research. The demucs library is a powerful audio source separation tool. For more information about demucs, visit their official repository at [https://github.com/facebookresearch/demucs](https://github.com/facebookresearch/demucs).
+Special thanks to the contributors and maintainers of demucs for their valuable work and open-source contribution.
+
+
 For Source Separation, you can import your song and get the vocal and accompaniment by enterring
 
 > python main.py -mode i -song_path path/to/your/song 
@@ -38,3 +54,28 @@ Then, under the Database dir, a folder named by your song is created. A vocal.wa
 
 TODO:
 >Apply the vocal pitch recognition to the vocal to get the pitch list. Next, store it in the same dir in .txt format.
+
+
+## LICENCE
+---
+MIT License
+
+Copyright (c) 2023 張耀明
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.

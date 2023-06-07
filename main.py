@@ -53,7 +53,7 @@ def import_songs(args):
     #-------------------------------------------------------------
     return
 
-def validate(args):
+def record(args):
     """
     Record your singing and apply the vocal pitch generation to generate a song list
     --------------------------
@@ -125,12 +125,15 @@ def validate(args):
     #------------------------------------------
     return
 
-
+def scoring(args,freq_list):
+    
+    
+    return
 if __name__ == '__main__':
     args = arg()
     # print(args.m)
     print(args.song_path)
     if args.mode == 'r':
-        validate(args)
+        freq_list = record(args)
     elif args.mode == 'i':
         import_songs(args)
