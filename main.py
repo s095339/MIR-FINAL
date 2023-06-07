@@ -69,7 +69,7 @@ def record(args):
     RATE = 44100
 
 
-    bgm = "./database/idol/vocals.wav"
+    bgm = "./music/accompaniment.wav"
     music = AudioSegment.from_file(bgm)
     duration_in_seconds = len(music) / 1000
     print(duration_in_seconds)

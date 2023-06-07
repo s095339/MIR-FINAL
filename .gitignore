@@ -1,3 +1,8 @@
 *.wav
 *.mp3
+<<<<<<< HEAD
 *.pyc
+=======
+*.mid
+*.ipynb
+>>>>>>> c68057c75b8d20847ca5afcb9cb412d9aec14c95
