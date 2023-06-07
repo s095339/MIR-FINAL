@@ -2,15 +2,11 @@
 import tensorflow as tf
 import tensorflow_hub as hub
 import numpy as np
-import matplotlib.pyplot as plt
-import librosa
-from librosa import display as librosadisplay
 import logging
 import math
 import statistics
 import sys
 from scipy.io import wavfile
-from base64 import b64decode
 from pydub import AudioSegment
 
 logger = logging.getLogger()
