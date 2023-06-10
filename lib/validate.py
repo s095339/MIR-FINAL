@@ -1,5 +1,6 @@
 
-
+from numpy import dot
+from numpy.linalg import norm
 def validate(ref_list, inf_list):
     """
     Parameter
@@ -15,6 +16,8 @@ def validate(ref_list, inf_list):
 
     #TODO:
     #Judge how well we sing
+    #ref_list, inf_list
 
-    
+    score = dot(ref_list, inf_list)/(norm(ref_list)*norm(inf_list))
+        
     return score
