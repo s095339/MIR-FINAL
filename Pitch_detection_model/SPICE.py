@@ -87,8 +87,8 @@ def vocal_pitch_recognition(file_path):
     for p, c in zip(pitch_outputs, confidence_outputs)
     ]
 
-    plt.plot(pitch_outputs_and_rests)
-    plt.show()
+    #plt.plot(pitch_outputs_and_rests)
+    #plt.show()
     offsets = [hz2offset(p) for p in pitch_outputs_and_rests if p != 0]
     ideal_offset = statistics.mean(offsets)
     pitches = [hz2pitch(p, ideal_offset) if p != 0 else 0 for p in pitch_outputs_and_rests]

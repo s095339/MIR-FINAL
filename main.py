@@ -18,6 +18,16 @@ def arg():
     parser.add_argument("-song_path", help="the .wav/.mp3 file of song to be imported", type=str)
     args = parser.parse_args()
     return args
+def freq2file(path, freq_list):
+    """
+    Store the given freq_list into a txt file to the given path 
+    """
+    with open(path, mode='w') as F:
+        for freq in freq_list:
+            F.writelines(str(freq))
+            F.writelines("\n")
+    return 
+
 
 def import_songs(args):
     """
@@ -45,9 +55,12 @@ def import_songs(args):
     sf.write(acc_file, accompaniment, sr)
     sf.write(vocal_file, vocal, sr)
 
-    freq_list = vocal_pitch_recognition(vocal_file)
+    pitch_list, freq_list = vocal_pitch_recognition(vocal_file)
+    #print(freq_list)
     #dump to .txt file
+    freq_list_file = os.path.join(dir_path,"freq.txt")
 
+    freq2file(freq_list_file, freq_list)
 
     return
 
@@ -133,12 +146,21 @@ def record(args):
     pygame.mixer.music.stop()
     pygame.mixer.quit()
 
+    #convert recording to freq_list
+    
+    _,freq_list = vocal_pitch_recognition(recorded_song_path)
+    
     #------------------------------------------
-    return recorded_song_path
+    #freq2file
+    return freq_list, song_name
 
-def scoring(args, vocal_file):
-    file_n = "output_singing.wav"
-    pitch_list = vocal_pitch_recognition(file_n)
+def scoring(args,freq_list_recorded ,ref_song_name):
+    ref_song_dir = os.path.join("./Database", ref_song_name)
+    ref_freq_list = []
+    with open(os.path.join(ref_song_dir, "freq.txt"),'r') as F:
+       ref_freq_list = F.readlines()
+    
+    print(ref_freq_list)
     
     return
 if __name__ == '__main__':
@@ -146,8 +168,8 @@ if __name__ == '__main__':
     # print(args.m)
     print(args.song_path)
     if args.mode == 'r':
-        recorded_song_path = record(args)
-        scoring(args, recorded_song_path)
+        freq_list, song_name= record(args)
+        scoring(args, freq_list, song_name)
     elif args.mode == 'i':
         import_songs(args)
     elif args.mode == 'v':
