@@ -8,13 +8,13 @@ from pydub import AudioSegment
 
 #-------------
 from Source_Separation.separation import getSeparation
-from Pitch_detection_model.vocal_pitch_recognition import vocal_pitch_recognition
+from Pitch_detection_model.SPICE import vocal_pitch_recognition
 #-------------
 DataBase_path = "./Database"
 
 def arg():
     parser = argparse.ArgumentParser()
-    parser.add_argument("-mode", help="i: import song \nr:record sining", type=str, default="r")
+    parser.add_argument("-mode", help="i: import song \nr:record sining \nv:validate", type=str, default="r")
     parser.add_argument("-song_path", help="the .wav/.mp3 file of song to be imported", type=str)
     args = parser.parse_args()
     return args
@@ -31,26 +31,24 @@ def import_songs(args):
     song_file = args.song_path.split("/")[-1]
     file_format = song_file[-4:]
     song_name = song_file.replace(file_format,"")
-    accompaniment, vocal ,sr= getSeparation(args.song_path)
+    print(f"Getting Separated source from path {song_file}")
+    accompaniment,vocal, sr= getSeparation(args.song_path)
 
-    #vocal pitch recognition
-    #pitch_list = vocal_pitch_recognition(vocal)
+    #pitch recognition
     
+
     dir_path = os.path.join(DataBase_path, song_name)
-    os.mkdir(dir_path)
+    if not os.path.exists(dir_path):
+        os.mkdir(dir_path)
     acc_file = os.path.join(dir_path,"accompaniment.wav")
-    vocal_file = os.path.join(dir_path,"vocals.wav")
+    vocal_file = os.path.join(dir_path,"vocal.wav")
     sf.write(acc_file, accompaniment, sr)
     sf.write(vocal_file, vocal, sr)
 
-    #TODO: ------------------------------------------------------
-    """
-    save the original .wav file,accompaniment and vocal separated 
-    from the file and pitch_list(e.g. in txt form) to the Database
-    """
+    freq_list = vocal_pitch_recognition(vocal_file)
+    #dump to .txt file
 
 
-    #-------------------------------------------------------------
     return
 
 def record(args):
@@ -67,9 +65,17 @@ def record(args):
     FORMAT = pyaudio.paInt16
     CHANNELS = 1
     RATE = 44100
+    song_list = os.listdir("./Database")
+    print("Choose a song")
+    for idx, song in enumerate(song_list):
+        print(idx,":",song)
+    song_idx = int(input("Enter a song id: "))
+    song_name = song_list[song_idx]
+    song_dir = os.path.join("./Database",song_list[song_idx])
+    bgm = os.path.join(song_dir,"accompaniment.wav")
 
+    
 
-    bgm = "./music/accompaniment.wav"
     music = AudioSegment.from_file(bgm)
     duration_in_seconds = len(music) / 1000
     print(duration_in_seconds)
@@ -111,7 +117,12 @@ def record(args):
     p.terminate()
 
     # dump the data to a .wav file and save
-    wf = wave.open("output.wav", 'wb')
+    if not os.path.exists("./recorded"):
+        os.mkdir("./recorded")
+    recorded_dir_path = os.path.join("./recorded",song_name)
+    os.mkdir(recorded_dir_path)
+    recorded_song_path = os.path.join(recorded_dir_path, "output.wav")
+    wf = wave.open(recorded_song_path, 'wb')
     wf.setnchannels(CHANNELS)
     wf.setsampwidth(p.get_sample_size(FORMAT))
     wf.setframerate(RATE)
@@ -123,10 +134,11 @@ def record(args):
     pygame.mixer.quit()
 
     #------------------------------------------
-    return
+    return recorded_song_path
 
-def scoring(args,freq_list):
-    
+def scoring(args, vocal_file):
+    file_n = "output_singing.wav"
+    pitch_list = vocal_pitch_recognition(file_n)
     
     return
 if __name__ == '__main__':
@@ -134,6 +146,9 @@ if __name__ == '__main__':
     # print(args.m)
     print(args.song_path)
     if args.mode == 'r':
-        freq_list = record(args)
+        recorded_song_path = record(args)
+        scoring(args, recorded_song_path)
     elif args.mode == 'i':
         import_songs(args)
+    elif args.mode == 'v':
+        scoring(args)

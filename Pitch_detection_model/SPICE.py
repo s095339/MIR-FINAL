@@ -9,6 +9,8 @@ import sys
 from scipy.io import wavfile
 from pydub import AudioSegment
 
+import matplotlib.pyplot as plt
+
 logger = logging.getLogger()
 logger.setLevel(logging.ERROR)
 
@@ -84,7 +86,10 @@ def vocal_pitch_recognition(file_path):
     output2hz(p) if c >= 0.9 else 0
     for p, c in zip(pitch_outputs, confidence_outputs)
     ]
+
+    plt.plot(pitch_outputs_and_rests)
+    plt.show()
     offsets = [hz2offset(p) for p in pitch_outputs_and_rests if p != 0]
     ideal_offset = statistics.mean(offsets)
     pitches = [hz2pitch(p, ideal_offset) if p != 0 else 0 for p in pitch_outputs_and_rests]
-    return pitches
+    return pitches,pitch_outputs_and_rests
