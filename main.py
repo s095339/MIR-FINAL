@@ -9,6 +9,7 @@ from pydub import AudioSegment
 #-------------
 from Source_Separation.separation import getSeparation
 from Pitch_detection_model.SPICE import vocal_pitch_recognition
+from lib.validate import validate
 #-------------
 DataBase_path = "./Database"
 
@@ -62,6 +63,7 @@ def import_songs(args):
 
     freq2file(freq_list_file, freq_list)
 
+    
     return
 
 def record(args):
@@ -133,7 +135,9 @@ def record(args):
     if not os.path.exists("./recorded"):
         os.mkdir("./recorded")
     recorded_dir_path = os.path.join("./recorded",song_name)
-    os.mkdir(recorded_dir_path)
+
+    if not os.path.exists(recorded_dir_path):
+        os.mkdir(recorded_dir_path)
     recorded_song_path = os.path.join(recorded_dir_path, "output.wav")
     wf = wave.open(recorded_song_path, 'wb')
     wf.setnchannels(CHANNELS)
@@ -149,19 +153,37 @@ def record(args):
     #convert recording to freq_list
     
     _,freq_list = vocal_pitch_recognition(recorded_song_path)
-    
+    recorded_freq_path = os.path.join(recorded_dir_path, "freq.txt")
+    freq2file(recorded_freq_path,freq_list)
     #------------------------------------------
     #freq2file
-    return freq_list, song_name
+    return recorded_freq_path, song_name
 
-def scoring(args,freq_list_recorded ,ref_song_name):
+def scoring(args, recorded_freq_path, ref_song_name):
+    import matplotlib.pyplot as plt
     ref_song_dir = os.path.join("./Database", ref_song_name)
     ref_freq_list = []
     with open(os.path.join(ref_song_dir, "freq.txt"),'r') as F:
-       ref_freq_list = F.readlines()
+        for line in F.readlines():
+            ref_freq_list.append(float(line.replace("\n","")))
     
-    print(ref_freq_list)
-    
+    freq_list_recorded = []
+    with open(recorded_freq_path,'r') as F:
+        for line in F.readlines():
+            freq_list_recorded.append(float(line.replace("\n","")))
+
+    plt.subplot(2,1,1)
+    plt.plot(ref_freq_list)
+    plt.title("ref song")
+    plt.subplot(2,1,2)
+    plt.plot(freq_list_recorded)
+    plt.title("recorded song")
+    plt.show()
+    #print(ref_freq_list)
+
+    print(f"score = {validate(ref_freq_list,freq_list_recorded)*100}")
+
+
     return
 if __name__ == '__main__':
     args = arg()
@@ -173,4 +195,11 @@ if __name__ == '__main__':
     elif args.mode == 'i':
         import_songs(args)
     elif args.mode == 'v':
-        scoring(args)
+        song_list = os.listdir("./Database")
+        print("Choose a song")
+        for idx, song in enumerate(song_list):
+            print(idx,":",song)
+        song_idx = int(input("Enter a song id: "))
+        song_name = song_list[song_idx]
+        recorded_freq_path = os.path.join("./recorded",song_name,"freq.txt")
+        scoring(args,recorded_freq_path,song_name)
