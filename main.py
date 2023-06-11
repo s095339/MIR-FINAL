@@ -181,7 +181,7 @@ def scoring(args, recorded_freq_path, ref_song_name):
     plt.show()
     #print(ref_freq_list)
 
-    print(f"score = {validate(ref_freq_list,freq_list_recorded)*100}")
+    print(f"score = {validate(ref_freq_list,freq_list_recorded)}")
 
 
     return
